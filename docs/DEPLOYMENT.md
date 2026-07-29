@@ -80,55 +80,47 @@ ciclo de trabajo, ver reporte de entrega), y confirmarlo con:
 Get-FileHash .\fixo-toolkit-0.1.0-dev.zip -Algorithm SHA256
 ```
 
-### 3. `get.openfix.mx` (lanzador estable) — hosting: SiteGround
+### 3. `get.openfix.mx` (lanzador estable) — hosting: SiteGround — ESTADO: desplegado
 
-El dominio ya está creado y resuelve por HTTPS (confirmado 2026-07-29),
-pero sirve la página de parking por defecto de SiteGround. Falta
-publicar el contenido real. No se tiene acceso a las credenciales de
-Site Tools desde este entorno de trabajo, así que estos pasos son
-manuales para quien administre esa cuenta SiteGround:
+Completado el 2026-07-29:
 
-1. **Ubicar el documento raíz del subdominio/dominio `get.openfix.mx`**
-   en Site Tools → *Site* → *File Manager* (o vía SFTP: Site Tools →
-   *Site* → *SFTP Accounts* para obtener host/usuario/clave). Si
-   `get.openfix.mx` se creó como subdominio de `openfix.mx`, su
-   document root suele estar en algo como
-   `~/www/openfix.mx/public_html/get/` o `~/www/get.openfix.mx/public_html/`
-   — confirmar el nombre exacto en Site Tools → *Site* → *Subdomains*.
-2. **Eliminar** el `index.html` de parking que SiteGround coloca por
-   defecto en ese directorio.
-3. **Subir `bootstrap.ps1`** (el archivo tal cual está en la rama de
-   trabajo de este repo, sin modificar una sola línea) a ese mismo
-   directorio.
-4. **Crear/editar `.htaccess`** en ese directorio para que la raíz
-   (`https://get.openfix.mx`, sin ruta) devuelva el contenido del
-   script como texto plano:
-   ```apache
-   DirectoryIndex bootstrap.ps1
-   AddType text/plain .ps1
-   ```
-   (El `Content-Type` no es estrictamente indispensable para que
-   `Invoke-Expression` funcione — PowerShell trata la respuesta como
-   texto de todas formas — pero evita que Apache la sirva como
-   `text/html` o la intente procesar de otra forma.)
-5. Verificar desde fuera de PowerShell primero, con cualquier cliente
-   HTTP, que `https://get.openfix.mx` devuelve el texto crudo del
-   script (empezando por `#requires -Version 5.1`) y no HTML.
-6. Confirmar que el certificado HTTPS de SiteGround para ese
-   dominio/subdominio es válido (Site Tools → *Security* → *SSL
-   Manager*) antes de publicitar el comando.
-7. Verificar manualmente, desde una máquina Windows real:
-   ```powershell
-   irm https://get.openfix.mx | iex
-   ```
+- Dominio creado, resuelve por HTTPS, certificado válido.
+- `bootstrap.ps1` subido al document root, `.htaccess` con
+  `DirectoryIndex bootstrap.ps1` + `AddType text/plain .ps1` aplicado.
+- `https://get.openfix.mx` devuelve el texto crudo del script
+  (confirmado con un cliente HTTP normal).
+- GitHub: repo `Fixo-Queretaro/fixo-toolkit` publicado en `main`,
+  release `v0.1.0-dev` con el ZIP adjunto, `manifest/release.json`
+  apuntando a la URL real del asset con el SHA-256 correcto (todo
+  verificado end-to-end: `raw.githubusercontent.com` → manifest →
+  `releases/download/...` → hash coincide).
 
-**No se debe anunciar el comando público hasta completar y verificar
-estos pasos.** Importante: `bootstrap.ps1` en su versión actual apunta
-a `https://raw.githubusercontent.com/Fixo-Queretaro/fixo-toolkit/main/manifest/release.json`
-como `ManifestUrl` por defecto — ese repo y esa rama `main` deben existir
-y estar publicados (ver sección 1) antes de que el comando funcione de
-extremo a extremo, aunque `get.openfix.mx` ya sirva el bootstrap
-correctamente.
+**Hallazgo importante — `-UserAgent` es obligatorio, no un workaround
+temporal.** El WAF/Anti-Bot AI de SiteGround bloquea con `403 Forbidden`
+cualquier petición cuyo User-Agent contenga la cadena "PowerShell" (es
+el User-Agent por defecto de `Invoke-RestMethod`/`Invoke-WebRequest`).
+Confirmado en Windows real: `irm https://get.openfix.mx | iex` sin
+`-UserAgent` → 403; con `-UserAgent "Mozilla/5.0 ..."` → funciona y
+`bootstrap.ps1` detecta el sistema y se relanza elevado correctamente.
+
+Decisión tomada: en vez de depender de que soporte de SiteGround cree
+una excepción en el WAF (que no está garantizada ni es inmediata), el
+**comando oficial público incluye siempre `-UserAgent`**:
+
+```powershell
+irm https://get.openfix.mx -UserAgent "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" | iex
+```
+
+`bootstrap.ps1` reutiliza ese mismo User-Agent (`$Script:FixoUserAgent`)
+en sus propias descargas internas (manifiesto y paquete) por
+consistencia. Este es ahora el comando de referencia en `README.md`;
+cualquier documentación o publicidad externa del proyecto debe usar
+esta forma completa, no la versión corta sin `-UserAgent`.
+
+Si en el futuro alguien logra que SiteGround cree la excepción de WAF
+para ese subdominio (Site Tools → Security), el `-UserAgent` dejaría de
+ser estrictamente necesario, pero no hay que asumir eso ni quitarlo del
+comando publicado sin volver a probar sin él primero.
 
 ### 4. `fixoqueretaro.com` (documentación pública)
 

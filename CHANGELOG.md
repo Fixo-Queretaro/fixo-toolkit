@@ -2,6 +2,17 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [Unreleased]
+
+### Cambiado
+
+- `bootstrap.ps1` y el comando público ahora requieren `-UserAgent`
+  explícito de forma permanente: el WAF/Anti-Bot AI de SiteGround
+  bloquea con 403 cualquier User-Agent que contenga "PowerShell".
+  Comando de referencia actualizado en `README.md` y
+  `docs/DEPLOYMENT.md`. `bootstrap.ps1` reutiliza el mismo User-Agent
+  internamente para sus descargas de manifiesto y paquete.
+
 ## [0.1.0-dev] - 2026-07-29
 
 ### Añadido

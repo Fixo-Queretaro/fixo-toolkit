@@ -24,6 +24,19 @@
       7. Extrae a una carpeta temporal única y ejecuta Invoke-FixoToolkit.ps1.
       8. Limpia los archivos temporales al finalizar (éxito o error).
     No cambia la Execution Policy del sistema de forma permanente.
+
+    IMPORTANTE - User-Agent obligatorio: el hosting de get.openfix.mx
+    (SiteGround) bloquea con 403 cualquier petición cuyo User-Agent
+    contenga la cadena "PowerShell" (protección Anti-Bot/WAF del
+    hosting, no depende de FIXO). Por eso el comando público SIEMPRE
+    debe incluir -UserAgent explícito:
+
+        irm https://get.openfix.mx -UserAgent "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" | iex
+
+    Este mismo User-Agent se reutiliza internamente (variable
+    $FixoUserAgent) para las descargas posteriores del manifiesto y el
+    paquete, por consistencia y para evitar bloqueos similares en el
+    futuro si algún otro host en la cadena aplicara una regla parecida.
 #>
 
 [CmdletBinding(SupportsShouldProcess)]
@@ -36,6 +49,10 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+# User-Agent tipo navegador: necesario porque get.openfix.mx (SiteGround)
+# bloquea con 403 cualquier User-Agent que contenga "PowerShell".
+$Script:FixoUserAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
 
 function Write-FixoBootstrapMessage {
     param([string]$Message, [string]$Color = 'White')
@@ -80,7 +97,7 @@ try {
 
     # 4. Descargar manifiesto
     Write-FixoBootstrapMessage "Descargando manifiesto: $ManifestUrl"
-    $manifestRaw = Invoke-RestMethod -Uri $ManifestUrl -UseBasicParsing -TimeoutSec 30
+    $manifestRaw = Invoke-RestMethod -Uri $ManifestUrl -UseBasicParsing -TimeoutSec 30 -UserAgent $Script:FixoUserAgent
     if (-not $manifestRaw.version -or -not $manifestRaw.package -or -not $manifestRaw.package.url -or -not $manifestRaw.package.sha256) {
         throw 'El manifiesto descargado no tiene el formato esperado (version/package.url/package.sha256).'
     }
@@ -93,7 +110,7 @@ try {
 
     try {
         Write-FixoBootstrapMessage "Descargando paquete: $($manifestRaw.package.url)"
-        Invoke-WebRequest -Uri $manifestRaw.package.url -OutFile $zipPath -UseBasicParsing -TimeoutSec 120
+        Invoke-WebRequest -Uri $manifestRaw.package.url -OutFile $zipPath -UseBasicParsing -TimeoutSec 120 -UserAgent $Script:FixoUserAgent
 
         # 6. Verificación de hash
         $actualHash = (Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash.ToLowerInvariant()

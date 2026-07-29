@@ -3,17 +3,23 @@
 Herramienta de optimización y mantenimiento para Windows 10/11,
 desarrollada por Fixo Querétaro.
 
-> **Estado: en desarrollo, no publicada.** El comando de instalación
-> final (`irm https://get.openfix.mx | iex`) **todavía no funciona**
-> porque `get.openfix.mx` no está desplegado. Ver
+> **Estado: en desarrollo.** `get.openfix.mx` ya sirve `bootstrap.ps1` y
+> el release `v0.1.0-dev` está publicado en GitHub, pero **todavía no se
+> ha validado el flujo completo en una VM Windows limpia**. Ver
 > [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) para el estado real y los
-> pasos pendientes.
+> pasos pendientes antes de considerarlo estable.
 
-## Comando objetivo (cuando el despliegue esté completo)
+## Comando de instalación
 
 ```powershell
-irm https://get.openfix.mx | iex
+irm https://get.openfix.mx -UserAgent "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" | iex
 ```
+
+**El `-UserAgent` es obligatorio, no opcional.** El hosting de
+`get.openfix.mx` (SiteGround) bloquea con 403 cualquier petición cuyo
+User-Agent contenga la cadena "PowerShell" (protección Anti-Bot/WAF del
+hosting). Sin ese parámetro, `irm https://get.openfix.mx | iex` falla
+con un 403 antes de llegar a ejecutar nada.
 
 ## Qué ofrece el menú
 
