@@ -4,6 +4,14 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
 ## [Unreleased]
 
+### Corregido
+
+- `bootstrap.ps1`: la ventana de PowerShell elevada se cerraba sola de
+  inmediato (con o sin error) porque el relanzamiento no usaba
+  `-NoExit` y el bloque catch llamaba `exit 1` sin pausa. Ahora usa
+  `-NoExit` en el relanzamiento y pausa con `Read-Host` antes de
+  cualquier `exit` en caso de error, para poder leer el mensaje.
+
 ### Cambiado
 
 - `bootstrap.ps1` y el comando público ahora requieren `-UserAgent`

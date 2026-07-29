@@ -89,8 +89,14 @@ try {
     if (-not $isAdmin -and -not $SkipElevationCheck) {
         Write-FixoBootstrapMessage 'Se requieren privilegios de administrador. Relanzando elevado...' 'Yellow'
         $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($MyInvocation.MyCommand.Definition))
+        # -NoExit: sin esto, la ventana elevada se cierra sola en cuanto el
+        # script termina (bien o mal) y no da tiempo de leer nada, ni
+        # siquiera un error. Con -NoExit la ventana queda abierta al
+        # terminar; además el bloque catch de abajo pausa explícitamente
+        # antes de "exit" porque "exit" cierra la ventana igual, con o sin
+        # -NoExit.
         Start-Process -FilePath (Get-Process -Id $PID).Path `
-            -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-EncodedCommand', $encoded) `
+            -ArgumentList @('-NoProfile', '-NoExit', '-ExecutionPolicy', 'Bypass', '-EncodedCommand', $encoded) `
             -Verb RunAs
         return
     }
@@ -139,5 +145,12 @@ try {
     Write-Host ''
     Write-Host "[FIXO bootstrap] ERROR: $($_.Exception.Message)" -ForegroundColor Red
     Write-Host '[FIXO bootstrap] Instalación detenida. No se realizó ningún cambio en el sistema.' -ForegroundColor Red
+    # "exit" cierra la ventana de inmediato incluso con -NoExit en el
+    # proceso elevado, así que se pausa primero para que el error se
+    # alcance a leer antes de que la ventana desaparezca.
+    if ($Host.Name -eq 'ConsoleHost') {
+        Write-Host ''
+        Read-Host 'Presiona ENTER para cerrar esta ventana'
+    }
     exit 1
 }
