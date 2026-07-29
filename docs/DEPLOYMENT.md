@@ -10,8 +10,8 @@ Linux, sin credenciales de usuario), se intentó verificar lo siguiente y
 |---|---|---|
 | Organización GitHub `Fixo-Queretaro` | **No confirmable** | Sin `gh` CLI, sin token, y `api.github.com` bloqueado por el proxy del sandbox. `git ls-remote` a `Fixo-Queretaro/fixo-toolkit.git` devolvió una solicitud de credenciales (comportamiento idéntico tanto si el repo es privado como si no existe; GitHub no distingue ambos casos sin autenticación). |
 | Repo `Fixo-Queretaro/fixo-toolkit` | **No confirmable** | Igual que arriba. |
-| DNS de `get.openfix.mx` | **No resuelve / no accesible** desde este entorno | `getent hosts` y `curl` fallaron (dominio bloqueado por el proxy del sandbox o sin registro DNS; no se puede distinguir cuál desde aquí). |
-| DNS de `fixoqueretaro.com` | **No resuelve / no accesible** desde este entorno | Igual que arriba. |
+| DNS de `get.openfix.mx` | **Resuelve y responde por HTTPS.** Actualmente sirve la página de parking por defecto de SiteGround ("Under construction"), NO el contenido de `bootstrap.ps1`. | Confirmado el 2026-07-29 vía fetch HTTP directo (el `curl` del sandbox de shell da falso negativo por el allowlist del proxy, no por el dominio). Hosting confirmado por el usuario: SiteGround. |
+| DNS de `fixoqueretaro.com` | **No confirmado en esta sesión** | No se volvió a probar tras el hallazgo de `get.openfix.mx`; usar el mismo método (fetch HTTP directo, no `curl` desde el sandbox de shell) para verificarlo cuando haga falta. |
 | PowerShell / Pester / PSScriptAnalyzer en el entorno de desarrollo | **No disponibles** | `pwsh` no está instalado; no hay acceso a `packages.microsoft.com` para instalarlo; no hay privilegios de `root` reales (`sudo` sin permisos efectivos). |
 
 **Ninguno de estos tres pasos (crear el repo remoto, publicar en
@@ -80,27 +80,55 @@ ciclo de trabajo, ver reporte de entrega), y confirmarlo con:
 Get-FileHash .\fixo-toolkit-0.1.0-dev.zip -Algorithm SHA256
 ```
 
-### 3. `get.openfix.mx` (lanzador estable)
+### 3. `get.openfix.mx` (lanzador estable) — hosting: SiteGround
 
-No se tiene evidencia de acceso a DNS ni a un panel de hosting (p. ej.
-SiteGround) desde este entorno de trabajo. Pasos manuales pendientes por
-quien administre el DNS del dominio `openfix.mx`:
+El dominio ya está creado y resuelve por HTTPS (confirmado 2026-07-29),
+pero sirve la página de parking por defecto de SiteGround. Falta
+publicar el contenido real. No se tiene acceso a las credenciales de
+Site Tools desde este entorno de trabajo, así que estos pasos son
+manuales para quien administre esa cuenta SiteGround:
 
-1. Crear el registro DNS de `get.openfix.mx` apuntando al servicio
-   elegido para servirlo (ej. GitHub Pages, un bucket estático, o el
-   propio SiteGround si ahí se aloja `fixoqueretaro.com`).
-2. Publicar `bootstrap.ps1` (el archivo, sin modificar, del repo en la
-   rama `main` ya validada) como el contenido servido en
-   `https://get.openfix.mx`, con `Content-Type: text/plain` para que
-   `irm | iex` lo reciba correctamente.
-3. Confirmar HTTPS válido (certificado) antes de publicitar el comando.
-4. Verificar manualmente, desde una máquina Windows real:
+1. **Ubicar el documento raíz del subdominio/dominio `get.openfix.mx`**
+   en Site Tools → *Site* → *File Manager* (o vía SFTP: Site Tools →
+   *Site* → *SFTP Accounts* para obtener host/usuario/clave). Si
+   `get.openfix.mx` se creó como subdominio de `openfix.mx`, su
+   document root suele estar en algo como
+   `~/www/openfix.mx/public_html/get/` o `~/www/get.openfix.mx/public_html/`
+   — confirmar el nombre exacto en Site Tools → *Site* → *Subdomains*.
+2. **Eliminar** el `index.html` de parking que SiteGround coloca por
+   defecto en ese directorio.
+3. **Subir `bootstrap.ps1`** (el archivo tal cual está en la rama de
+   trabajo de este repo, sin modificar una sola línea) a ese mismo
+   directorio.
+4. **Crear/editar `.htaccess`** en ese directorio para que la raíz
+   (`https://get.openfix.mx`, sin ruta) devuelva el contenido del
+   script como texto plano:
+   ```apache
+   DirectoryIndex bootstrap.ps1
+   AddType text/plain .ps1
+   ```
+   (El `Content-Type` no es estrictamente indispensable para que
+   `Invoke-Expression` funcione — PowerShell trata la respuesta como
+   texto de todas formas — pero evita que Apache la sirva como
+   `text/html` o la intente procesar de otra forma.)
+5. Verificar desde fuera de PowerShell primero, con cualquier cliente
+   HTTP, que `https://get.openfix.mx` devuelve el texto crudo del
+   script (empezando por `#requires -Version 5.1`) y no HTML.
+6. Confirmar que el certificado HTTPS de SiteGround para ese
+   dominio/subdominio es válido (Site Tools → *Security* → *SSL
+   Manager*) antes de publicitar el comando.
+7. Verificar manualmente, desde una máquina Windows real:
    ```powershell
    irm https://get.openfix.mx | iex
    ```
 
 **No se debe anunciar el comando público hasta completar y verificar
-estos tres pasos.**
+estos pasos.** Importante: `bootstrap.ps1` en su versión actual apunta
+a `https://raw.githubusercontent.com/Fixo-Queretaro/fixo-toolkit/main/manifest/release.json`
+como `ManifestUrl` por defecto — ese repo y esa rama `main` deben existir
+y estar publicados (ver sección 1) antes de que el comando funcione de
+extremo a extremo, aunque `get.openfix.mx` ya sirva el bootstrap
+correctamente.
 
 ### 4. `fixoqueretaro.com` (documentación pública)
 
