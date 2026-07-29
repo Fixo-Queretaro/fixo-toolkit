@@ -3,12 +3,12 @@
   "product": "fixo-toolkit",
   "version": "0.1.0-dev",
   "status": "development",
-  "note": "PENDIENTE: esta versión NO ha sido probada en una VM Windows limpia con snapshot y NO debe considerarse estable ni publicarse en get.openfix.mx hasta completar esa validación.",
-  "releasedAtUtc": null,
-  "channel": "none",
+  "note": "Release de DESARROLLO publicado en GitHub. Esta versión NO ha sido probada en una VM Windows limpia con snapshot, NI se ha corrido PSScriptAnalyzer/Pester en un entorno con PowerShell real. NO se debe promover a canal estable ni anunciar el comando publico hasta completar esa validacion (ver docs/DEPLOYMENT.md).",
+  "releasedAtUtc": "2026-07-29T13:33:00Z",
+  "channel": "dev",
   "package": {
     "fileName": "fixo-toolkit-0.1.0-dev.zip",
-    "url": "PENDIENTE: se completa al publicar el asset en un GitHub Release real (Fixo-Queretaro/fixo-toolkit)",
+    "url": "https://github.com/Fixo-Queretaro/fixo-toolkit/releases/download/v0.1.0-dev/fixo-toolkit-0.1.0-dev.zip",
     "sha256": "cfbe5f9729dffbbedb3dfd333f886946f12cf56077d3786264de31c34349c2e1",
     "sha256Note": "Hash real, verificado con sha256sum, del ZIP reproducible generado el 2026-07-29 (38 archivos, contenido descrito en el reporte de entrega). bootstrap.ps1 NUNCA lee el manifest empaquetado DENTRO del ZIP: siempre descarga manifest/release.json por separado desde la rama publicada (ManifestUrl) y usa ESE archivo como ancla de confianza para verificar el ZIP. Por eso la copia de este archivo embebida en el propio ZIP es solo informativa/histórica; la copia autoritativa es la que se publique en main. Si se edita cualquier archivo del repo hay que regenerar el ZIP y recalcular este hash antes de publicar (comando en docs/DEPLOYMENT.md)."
   },
