@@ -1,0 +1,35 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Fixo-Queretaro/fixo-toolkit/main/manifest/release.schema.json",
+  "product": "fixo-toolkit",
+  "version": "0.1.0-dev",
+  "status": "development",
+  "note": "PENDIENTE: esta versión NO ha sido probada en una VM Windows limpia con snapshot y NO debe considerarse estable ni publicarse en get.openfix.mx hasta completar esa validación.",
+  "releasedAtUtc": null,
+  "channel": "none",
+  "package": {
+    "fileName": "fixo-toolkit-0.1.0-dev.zip",
+    "url": "PENDIENTE: se completa al publicar el asset en un GitHub Release real (Fixo-Queretaro/fixo-toolkit)",
+    "sha256": "4593e2ed62639c0f0d4e12281ea8a9614c84707bcbfd3bdf6d36762b791d9129",
+    "sha256Note": "Hash real, verificado con sha256sum, del ZIP reproducible generado el 2026-07-29 sobre el contenido exacto de este árbol de archivos (incluyendo este manifest.json). Es un hash autorreferencial por diseño (el manifest describe al ZIP que lo contiene a sí mismo): si se vuelve a editar CUALQUIER archivo del repositorio, incluido este, hay que regenerar el ZIP y recalcular este valor antes de publicar. Comando de reproducción en docs/DEPLOYMENT.md."
+  },
+  "minimumPowerShellVersion": "5.1",
+  "supportedOS": [
+    "Windows 10",
+    "Windows 11"
+  ],
+  "thirdPartyComponents": [
+    {
+      "name": "Windows-Optimizer (UltimateWindowsOptimizer.bat)",
+      "author": "AntonSiMal",
+      "sourceRepo": "https://github.com/AntonSiMal/Windows-Optimizer",
+      "commit": "39ece12517fd2ebccacb41ccfbde1e6e25d8830c",
+      "sha256": "ca7e8d090fdb2bc757f19d3a56987fc922057fdd97bad8c21e8383fe6ca090ba",
+      "license": "AGPL-3.0 (declarado en LICENSE.txt del repositorio original; tratado conservadoramente pese a que el README indica MIT)"
+    },
+    {
+      "name": "Microsoft Activation Scripts (launcher)",
+      "sourceUrl": "https://get.activated.win",
+      "note": "No vendorizado; se invoca en tiempo de ejecución con consentimiento explícito del usuario. FIXO no distribuye ni fija este script por hash."
+    }
+  ]
+}
