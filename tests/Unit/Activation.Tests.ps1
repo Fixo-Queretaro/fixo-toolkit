@@ -10,37 +10,37 @@ Describe 'Actions/Activation.ps1 (Opción 3)' {
 
     Context 'Sin consentimiento' {
         It 'no invoca el script externo si el usuario no confirma' {
-            $invoked = $false
+            $invocation = [pscustomobject]@{ Called = $false }
             $result = Invoke-FixoActivation `
                 -ReadConfirmation { 'no' } `
-                -InvokeExternalScript { $invoked = $true }
+                -InvokeExternalScript { $invocation.Called = $true }
 
             $result.Status | Should -Be 'CancelledByUser'
-            $invoked | Should -BeFalse
+            $invocation.Called | Should -BeFalse
         }
     }
 
     Context 'TestMode nunca hace llamadas de red' {
         It 'no invoca el script externo aunque haya consentimiento' {
-            $invoked = $false
+            $invocation = [pscustomobject]@{ Called = $false }
             $result = Invoke-FixoActivation -TestMode `
                 -ReadConfirmation { 'si' } `
-                -InvokeExternalScript { $invoked = $true }
+                -InvokeExternalScript { $invocation.Called = $true }
 
             $result.Status | Should -Be 'TestModeStop'
-            $invoked | Should -BeFalse
+            $invocation.Called | Should -BeFalse
         }
     }
 
     Context 'FIXO no descarga ni introduce claves por su cuenta' {
         It 'delega 100% al script externo sin procesar ni almacenar datos de clave' {
-            $capturedArgs = $null
+            $invocation = [pscustomobject]@{ Called = $false }
             $result = Invoke-FixoActivation `
                 -ReadConfirmation { 'si' } `
-                -InvokeExternalScript { $capturedArgs = 'invoked-external-only' }
+                -InvokeExternalScript { $invocation.Called = $true }
 
             $result.Status | Should -Be 'Launched'
-            $capturedArgs | Should -Be 'invoked-external-only'
+            $invocation.Called | Should -BeTrue
 
             # FIXO Toolkit no debe tener ninguna función que reciba o
             # almacene "ProductKey" / "License" en este módulo.
