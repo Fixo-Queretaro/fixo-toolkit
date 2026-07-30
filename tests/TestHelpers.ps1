@@ -10,7 +10,7 @@
     de entrega). Deben correrse antes de considerar una versión estable.
 #>
 
-function Import-FixoModulesForTest {
+function Get-FixoModulePathForTest {
     [CmdletBinding()]
     param()
 
@@ -37,7 +37,7 @@ function Import-FixoModulesForTest {
     )
 
     foreach ($rel in $files) {
-        . (Join-Path -Path $srcRoot -ChildPath $rel)
+        Join-Path -Path $srcRoot -ChildPath $rel
     }
 }
 

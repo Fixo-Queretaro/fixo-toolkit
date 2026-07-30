@@ -30,6 +30,15 @@
     PowerShell de verdad.
 #>
 
+BeforeDiscovery {
+    $discoveryPsHost = Get-Command -Name pwsh -ErrorAction SilentlyContinue
+    if (-not $discoveryPsHost) {
+        $discoveryPsHost = Get-Command -Name powershell -ErrorAction SilentlyContinue
+    }
+
+    $Script:PsHostAvailable = [bool]$discoveryPsHost
+}
+
 BeforeAll {
     $Script:RepoRoot = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
     $Script:V2AssetPath = Join-Path -Path $Script:RepoRoot -ChildPath 'fixo-toolkit-0.1.0-dev-v2.zip'
