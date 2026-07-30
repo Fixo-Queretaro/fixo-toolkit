@@ -1,4 +1,4 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 <#
 .SYNOPSIS
     Comprobaciones previas: compatibilidad, punto de restauración, espacio en disco.

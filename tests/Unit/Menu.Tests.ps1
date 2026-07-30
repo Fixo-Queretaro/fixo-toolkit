@@ -1,7 +1,14 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 BeforeAll {
-    . (Join-Path $PSScriptRoot '..\TestHelpers.ps1')
-    Import-FixoModulesForTest
+    # IMPORTANTE: a propósito NO se llama Import-FixoModulesForTest aquí.
+    # Esta prueba debe ejercer la carga REAL que hace Invoke-FixoToolkit.ps1
+    # por sí mismo. Precargar los módulos antes (como se hacía antes de la
+    # corrección de scope) enmascara bugs de carga: las funciones quedaban
+    # disponibles por el preload aunque Import-FixoModules (la versión
+    # rota, dentro de una función) fallara en silencio. Ver
+    # tests/Integration/PackageStartup.Tests.ps1 para la prueba de
+    # regresión específica de ese bug, en un proceso de PowerShell nuevo.
+    #
     # Invoke-FixoToolkit.ps1 auto-arranca el bucle si se ejecuta directamente;
     # se dot-source para exponer únicamente sus funciones sin arrancar el menú.
     . (Join-Path $PSScriptRoot '..\..\src\Invoke-FixoToolkit.ps1') -SkipElevationCheck

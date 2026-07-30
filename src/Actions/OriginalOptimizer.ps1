@@ -1,4 +1,4 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 <#
 .SYNOPSIS
     Opción 1: ejecuta el BAT externo "Windows-Optimizer" (AntonSiMal) sin

@@ -1,4 +1,4 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 <#
 .SYNOPSIS
     Utilidades compartidas para las pruebas Pester de FIXO Toolkit.

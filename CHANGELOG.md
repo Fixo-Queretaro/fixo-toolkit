@@ -4,6 +4,49 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
 ## [Unreleased]
 
+### Corregido — CRÍTICO (candidato v3)
+
+- **Bug de scope que rompía el arranque real del paquete**:
+  `Invoke-FixoToolkit.ps1` cargaba `Core/`, `Actions/` y `Rollback/`
+  mediante dot-sourcing DENTRO de la función `Import-FixoModules`. En
+  PowerShell, el dot-sourcing usa el scope del llamador EN EL MOMENTO
+  en que se ejecuta; si el llamador es una función, las funciones/
+  variables cargadas quedan atadas al scope de esa función y
+  desaparecen al retornar. `Start-FixoToolkit` llamaba
+  `Import-FixoModules` y, en la siguiente línea, `Initialize-FixoLog`
+  — que para entonces ya no existía. Resultado real reportado sobre el
+  asset publicado `fixo-toolkit-0.1.0-dev-v2.zip`:
+  `El término 'Initialize-FixoLog' no se reconoce como nombre de un
+  cmdlet, función, archivo de script o programa ejecutable.`
+  Las pruebas existentes no detectaron esto porque `tests/Unit/Menu.Tests.ps1`
+  precargaba los mismos módulos por otra vía (`Import-FixoModulesForTest`)
+  antes de dot-sourcear el entrypoint, enmascarando el fallo real, y
+  además nunca llegaban a ejercer `Start-FixoToolkit` (se dot-sourceaba
+  el archivo, lo que no dispara el arranque automático).
+  **Corrección**: el dot-sourcing ahora ocurre en el cuerpo del script
+  (`src/Invoke-FixoToolkit.ps1`, scope de script), nunca dentro de una
+  función. Se agregó `Assert-FixoModulesLoaded`, que verifica
+  explícitamente que cada comando obligatorio quedó definido tras la
+  carga y detiene la ejecución con un mensaje exacto (comando + archivo
+  esperado) si falta alguno, antes de cualquier operación del sistema.
+  Se agregó el modo `-SelfTest` (carga y valida, sin tocar el sistema)
+  y una prueba de regresión real
+  (`tests/Integration/PackageStartup.Tests.ps1`) que arranca un
+  proceso de PowerShell nuevo — sin precargar nada — contra el asset
+  v2 real (reproduce el fallo) y contra el candidato corregido (pasa).
+
+### Corregido — Codificación
+
+- Mojibake de acentos (`VersiÃ³n`, `InstalaciÃ³n`, `PequeÃ±o`,
+  `propÃ³sito`, etc.) causado por Windows PowerShell 5.1 interpretando
+  archivos `.ps1` UTF-8 sin BOM con la codificación ANSI del sistema en
+  vez de UTF-8. Corregido convirtiendo `bootstrap.ps1` y todos los
+  `.ps1` de `src/` y `tests/` a UTF-8 **con BOM** (formato que WinPS
+  5.1 sí detecta automáticamente). Pendiente y NO aplicado en este
+  ciclo (no se tocó SiteGround): el `Content-Type` de la respuesta HTTP
+  de `get.openfix.mx` sirve `text/plain` sin `charset=utf-8`; el cambio
+  de `.htaccess` recomendado queda documentado en `docs/DEPLOYMENT.md`.
+
 ### Corregido
 
 - `bootstrap.ps1`: la ventana de PowerShell elevada se cerraba sola de

@@ -1,4 +1,4 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 <#
 .SYNOPSIS
     Diagnóstico de almacenamiento: SSD/HDD, espacio libre, resumen de

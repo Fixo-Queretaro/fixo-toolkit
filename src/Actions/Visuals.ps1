@@ -1,4 +1,4 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 <#
 .SYNOPSIS
     Ajustes visuales OPCIONALES para equipos con pocos recursos.

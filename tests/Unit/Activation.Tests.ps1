@@ -1,4 +1,4 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 BeforeAll {
     . (Join-Path $PSScriptRoot '..\TestHelpers.ps1')
     Import-FixoModulesForTest
