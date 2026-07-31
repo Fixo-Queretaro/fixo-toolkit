@@ -32,7 +32,6 @@ function Get-FixoModulePathForTest {
         'Actions\Apps.ps1'
         'Actions\Diagnostics.ps1'
         'Actions\OriginalOptimizer.ps1'
-        'Actions\Activation.ps1'
         'Rollback\Invoke-FixoRollback.ps1'
     )
 

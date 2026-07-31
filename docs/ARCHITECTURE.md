@@ -26,7 +26,6 @@ fixo-toolkit/
 │   │   ├── Storage.ps1            # Diagnóstico de almacenamiento (solo lectura)
 │   │   ├── Apps.ps1               # Inventario y desinstalación por allow-list
 │   │   ├── Diagnostics.ps1        # SFC / DISM ScanHealth (solo diagnóstico)
-│   │   └── Activation.ps1         # Opción 3: lanzador de activación de terceros
 │   └── Rollback/
 │       └── Invoke-FixoRollback.ps1  # Dispatcher de rollback selectivo
 ├── tests/
@@ -68,9 +67,6 @@ el patrón obligatorio:
   verificación de hash antes de cualquier ejecución.
 - **Opción 2**: cada acción es un módulo independiente y seleccionable,
   todas pasan por `Invoke-FixoTransaction`.
-- **Opción 3** (`Activation.ps1`): aislada, sin lógica propia de
-  activación; delega 100% en el script externo tras consentimiento.
-
 ## Componentes explícitamente fuera de alcance de la Opción 2
 
 Microsoft Defender, BitLocker, Secure Boot, BCD, pagefile, IPv6, Windows

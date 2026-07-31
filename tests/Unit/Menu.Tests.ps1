@@ -20,14 +20,12 @@ Describe 'Invoke-FixoToolkit.ps1 - menú principal' {
         It 'retorna Status=Exit sin invocar ninguna acción' {
             Mock Invoke-FixoOriginalOptimizer { throw 'No debería llamarse' }
             Mock Show-FixoSafeOptimizationMenu { throw 'No debería llamarse' }
-            Mock Invoke-FixoActivation { throw 'No debería llamarse' }
 
             $result = Invoke-FixoMenuSelection -Selection '0'
 
             $result.Status | Should -Be 'Exit'
             Should -Invoke Invoke-FixoOriginalOptimizer -Times 0
             Should -Invoke Show-FixoSafeOptimizationMenu -Times 0
-            Should -Invoke Invoke-FixoActivation -Times 0
         }
     }
 
@@ -36,6 +34,17 @@ Describe 'Invoke-FixoToolkit.ps1 - menú principal' {
             Mock Invoke-FixoOriginalOptimizer { throw 'No debería llamarse' }
             $result = Invoke-FixoMenuSelection -Selection 'xyz'
             $result.Status | Should -Be 'InvalidSelection'
+        }
+
+        It 'trata la antigua opción 3 como inválida' {
+            Mock Invoke-FixoOriginalOptimizer { throw 'No debería llamarse' }
+            Mock Show-FixoSafeOptimizationMenu { throw 'No debería llamarse' }
+
+            $result = Invoke-FixoMenuSelection -Selection '3'
+
+            $result.Status | Should -Be 'InvalidSelection'
+            Should -Invoke Invoke-FixoOriginalOptimizer -Times 0
+            Should -Invoke Show-FixoSafeOptimizationMenu -Times 0
         }
     }
 
@@ -77,8 +86,20 @@ Describe 'Invoke-FixoToolkit.ps1 - menú principal' {
             $output | Should -Match 'FIXO TOOLKIT'
             $output | Should -Match '\[1\] Ejecutar Windows Optimizer completo'
             $output | Should -Match '\[2\] Optimización recomendada por FIXO'
-            $output | Should -Match '\[3\] activación'
+            $output | Should -Not -Match '\[3\]'
             $output | Should -Match '\[0\] Salir'
+        }
+
+        It 'el código de producción no contiene el lanzador de activación retirado' {
+            $srcRoot = Join-Path $PSScriptRoot '..\..\src'
+            $source = (
+                Get-ChildItem -Path $srcRoot -Filter '*.ps1' -Recurse |
+                    ForEach-Object {
+                        Get-Content -LiteralPath $_.FullName -Raw
+                    }
+            ) -join "`n"
+
+            $source | Should -Not -Match '(?i)get\.activated\.win|Invoke-FixoActivation|Actions[\\/]Activation\.ps1'
         }
     }
 }

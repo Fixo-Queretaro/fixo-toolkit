@@ -25,11 +25,6 @@
       "commit": "39ece12517fd2ebccacb41ccfbde1e6e25d8830c",
       "sha256": "ca7e8d090fdb2bc757f19d3a56987fc922057fdd97bad8c21e8383fe6ca090ba",
       "license": "AGPL-3.0 (declarado en LICENSE.txt del repositorio original; tratado conservadoramente pese a que el README indica MIT)"
-    },
-    {
-      "name": "Microsoft Activation Scripts (launcher)",
-      "sourceUrl": "https://get.activated.win",
-      "note": "No vendorizado; se invoca en tiempo de ejecución con consentimiento explícito del usuario. FIXO no distribuye ni fija este script por hash."
     }
   ]
 }

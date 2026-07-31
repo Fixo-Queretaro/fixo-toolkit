@@ -32,9 +32,6 @@ FIXO TOOLKIT
 [2] Optimización recomendada por FIXO
     Cambios conservadores, verificables y reversibles.
 
-[3] activación 
-    Activacion de Windows/Office.
-
 [0] Salir
 ```
 
@@ -44,9 +41,6 @@ FIXO TOOLKIT
   sin rollback. Ver [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 - **Opción 2**: ajustes propios de FIXO, en PowerShell, modulares,
   reversibles, con `-WhatIf`, seleccionables individualmente.
-- **Opción 3**: lanza el activador de terceros
-  [get.activated.win](https://get.activated.win) tras consentimiento
-  explícito. FIXO no procesa claves de producto.
 
 ## Requisitos
 

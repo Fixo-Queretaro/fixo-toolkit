@@ -39,7 +39,6 @@ Invoke-FixoRollbackByName -ActionName 'Cleanup-TempFiles'
 | `Startup-Disable-<Nombre>` | El valor original se mueve a una subclave de respaldo propia de FIXO; el rollback lo reescribe en su ubicación original. |
 | `Power-HighPerformance` | Se restaura el GUID del plan de energía activo antes del cambio. |
 | `OriginalOptimizer-Run` (Opción 1) | **Sin rollback.** Se documenta explícitamente; el BAT externo puede tocar componentes que FIXO no rastrea individualmente. |
-| Opción 3 (activación) | No aplica cambios propios de FIXO; cualquier reversión depende del proyecto externo. |
 
 ## Qué NO hace el rollback
 

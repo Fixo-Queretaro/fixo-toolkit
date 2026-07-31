@@ -4,6 +4,17 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
 ## [Unreleased]
 
+### Eliminado — Seguridad y alcance
+
+- Se retiró por completo la opción 3 y el lanzador externo
+  `get.activated.win`: desaparecieron del menú, cargador de módulos,
+  código de producción, pruebas específicas, documentación, avisos de
+  terceros y manifiesto de versión. FIXO Toolkit queda enfocado
+  exclusivamente en optimización y diagnóstico de Windows.
+- `tests/Unit/Menu.Tests.ps1` ahora exige que la antigua opción `3` sea
+  inválida y bloquea la reintroducción del lanzador o de sus referencias
+  dentro del código de producción.
+
 ### Corregido — CRÍTICO (candidato v3)
 
 - **Bug de scope que rompía el arranque real del paquete**:

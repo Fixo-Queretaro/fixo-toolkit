@@ -67,7 +67,6 @@ $Script:FixoModuleManifest = @(
     @{ Path = 'Actions\Apps.ps1';                Commands = @('Get-FixoUninstallAllowList', 'Get-FixoInstalledAppsInventory', 'Uninstall-FixoApp') }
     @{ Path = 'Actions\Diagnostics.ps1';         Commands = @('Invoke-FixoSfcScan', 'Invoke-FixoDismScanHealth') }
     @{ Path = 'Actions\OriginalOptimizer.ps1';   Commands = @('Get-FixoOriginalOptimizerMetadata', 'Show-FixoOriginalOptimizerWarning', 'Get-FixoOriginalOptimizerConsent', 'Invoke-FixoExternalProcess', 'Invoke-FixoOriginalOptimizer') }
-    @{ Path = 'Actions\Activation.ps1';          Commands = @('Show-FixoActivationWarning', 'Get-FixoActivationConsent', 'Invoke-FixoActivation') }
     @{ Path = 'Rollback\Invoke-FixoRollback.ps1'; Commands = @('Register-FixoRollbackHandler', 'Get-FixoRollbackableActions', 'Invoke-FixoRollbackByName') }
 )
 
@@ -127,9 +126,6 @@ function Show-FixoMenu {
     Write-Host ''
     Write-Host '[2] Optimización recomendada por FIXO'
     Write-Host '    Cambios conservadores, verificables y reversibles.'
-    Write-Host ''
-    Write-Host '[3] activación '
-    Write-Host '    Activacion de Windows/Office.'
     Write-Host ''
     Write-Host '[0] Salir'
     Write-Host ''
@@ -205,7 +201,6 @@ function Invoke-FixoMenuSelection {
     switch ($Selection) {
         '1' { return Invoke-FixoOriginalOptimizer -WhatIf:$WhatIfPreference }
         '2' { return Show-FixoSafeOptimizationMenu }
-        '3' { return Invoke-FixoActivation -WhatIf:$WhatIfPreference }
         '0' { return [pscustomobject]@{ Status = 'Exit' } }
         default {
             Write-Host 'Opción no válida.' -ForegroundColor Yellow
