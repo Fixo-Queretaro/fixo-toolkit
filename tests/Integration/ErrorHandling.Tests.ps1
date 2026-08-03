@@ -1,7 +1,9 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 BeforeAll {
     . (Join-Path $PSScriptRoot '..\TestHelpers.ps1')
-    Import-FixoModulesForTest
+    foreach ($modulePath in (Get-FixoModulePathForTest)) {
+        . $modulePath
+    }
 }
 
 Describe 'Manejo seguro de errores de red y permisos' {

@@ -1,10 +1,10 @@
 # Avisos de terceros
 
 FIXO Toolkit integra, mediante descarga en tiempo de ejecución (nunca
-copiando código fuente dentro de este repositorio), los siguientes
-proyectos de terceros.
+copiando código fuente dentro de este repositorio), el siguiente
+proyecto de terceros.
 
-## 1. Windows-Optimizer (UltimateWindowsOptimizer.bat)
+## Windows-Optimizer (UltimateWindowsOptimizer.bat)
 
 - Autor: AntonSiMal
 - Repositorio: https://github.com/AntonSiMal/Windows-Optimizer
@@ -40,16 +40,6 @@ por AntonSiMal y contribuidores del repositorio `Windows-Optimizer`,
 distribuido bajo licencia AGPL-3.0. FIXO Toolkit no reclama autoría sobre
 ese código y lo redistribuye únicamente por referencia (descarga bajo
 demanda), no por inclusión directa en este repositorio.
-
-## 2. Microsoft Activation Scripts (get.activated.win)
-
-- URL de lanzamiento: https://get.activated.win
-- FIXO Toolkit **no vendoriza, no fija por hash y no audita línea por
-  línea** este proyecto. La Opción 3 del menú únicamente reenvía la
-  ejecución (`irm https://get.activated.win | iex`) tras consentimiento
-  explícito del usuario.
-- FIXO Toolkit no descarga, procesa, muestra ni almacena claves de
-  producto de ningún tipo en ningún punto de su propio código.
 
 ---
 

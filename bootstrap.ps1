@@ -1,4 +1,4 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 <#
 .SYNOPSIS
     Lanzador estable de FIXO Toolkit. Pequeño y auditable a propósito.

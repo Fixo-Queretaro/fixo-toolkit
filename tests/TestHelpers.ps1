@@ -1,4 +1,4 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 <#
 .SYNOPSIS
     Utilidades compartidas para las pruebas Pester de FIXO Toolkit.
@@ -10,7 +10,7 @@
     de entrega). Deben correrse antes de considerar una versión estable.
 #>
 
-function Import-FixoModulesForTest {
+function Get-FixoModulePathForTest {
     [CmdletBinding()]
     param()
 
@@ -32,12 +32,11 @@ function Import-FixoModulesForTest {
         'Actions\Apps.ps1'
         'Actions\Diagnostics.ps1'
         'Actions\OriginalOptimizer.ps1'
-        'Actions\Activation.ps1'
         'Rollback\Invoke-FixoRollback.ps1'
     )
 
     foreach ($rel in $files) {
-        . (Join-Path -Path $srcRoot -ChildPath $rel)
+        Join-Path -Path $srcRoot -ChildPath $rel
     }
 }
 

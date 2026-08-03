@@ -122,6 +122,40 @@ para ese subdominio (Site Tools → Security), el `-UserAgent` dejaría de
 ser estrictamente necesario, pero no hay que asumir eso ni quitarlo del
 comando publicado sin volver a probar sin él primero.
 
+**Pendiente — codificación de la respuesta HTTP (NO aplicado, no se
+tocó SiteGround en este ciclo).** Hay dos codificaciones distintas y
+NO deben confundirse:
+
+1. **Codificación de los archivos dentro del ZIP / repo**: corregida en
+   el candidato v3 — todos los `.ps1` de `src/` y `bootstrap.ps1` se
+   guardaron como UTF-8 **con BOM**. Windows PowerShell 5.1 (a
+   diferencia de PowerShell 7+) no asume UTF-8 para archivos `.ps1`
+   sin BOM; sin BOM, WinPS 5.1 los interpreta con la codificación ANSI
+   del sistema, lo que corrompía los acentos (`VersiÃ³n`, `PequeÃ±o`,
+   etc. — bytes UTF-8 de "ó"/"ñ" reinterpretados como Latin-1). Con
+   BOM, WinPS 5.1 detecta UTF-8 correctamente.
+2. **Codificación de la respuesta HTTP de `get.openfix.mx`**: el
+   `Content-Type` que sirve SiteGround para `bootstrap.ps1` es
+   `text/plain` **sin `charset=utf-8`** (confirmado con
+   `curl.exe -I` el 2026-07-29). Esto es un problema *distinto* al de
+   arriba: aunque el archivo en el servidor ya tenga BOM UTF-8 (una vez
+   se suba el candidato corregido), un `Content-Type` sin charset
+   explícito puede hacer que algunos clientes HTTP asuman una
+   codificación incorrecta antes de siquiera mirar el BOM.
+   **No se modificó SiteGround durante esta tarea** (instrucción
+   explícita de no tocar el hosting en este ciclo). El cambio
+   preparado y pendiente de aplicar ahí, cuando se autorice, es
+   ajustar el `.htaccess` de `get.openfix.mx` de:
+   ```apache
+   AddType text/plain .ps1
+   ```
+   a:
+   ```apache
+   AddType 'text/plain; charset=utf-8' .ps1
+   ```
+   **No declarar este punto resuelto sin volver a probar desde Windows
+   PowerShell real** después de aplicar el cambio en SiteGround.
+
 ### 4. `fixoqueretaro.com` (documentación pública)
 
 Fuera de alcance de esta primera versión funcional. Cuando exista acceso

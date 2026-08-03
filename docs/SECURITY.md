@@ -50,12 +50,6 @@ antes de ejecutarse a sí mismo. Por eso:
 - El punto de restauración se intenta, pero nunca se reporta como creado
   si Windows no lo confirma (límite de 24h u otras políticas).
 
-## Opción 3 (activación)
-
-- No descarga, procesa, ni almacena claves de producto en ningún punto
-  del código de FIXO Toolkit.
-- Requiere consentimiento explícito antes de invocar el script externo.
-
 ## Logging
 
 - Todos los mensajes pasan por `ConvertTo-FixoRedactedText`

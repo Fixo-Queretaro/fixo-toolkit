@@ -3,14 +3,14 @@
   "product": "fixo-toolkit",
   "version": "0.1.0-dev",
   "status": "development",
-  "note": "Release de DESARROLLO publicado en GitHub. Esta versión NO ha sido probada en una VM Windows limpia con snapshot, NI se ha corrido PSScriptAnalyzer/Pester en un entorno con PowerShell real. NO se debe promover a canal estable ni anunciar el comando publico hasta completar esa validacion (ver docs/DEPLOYMENT.md).",
-  "releasedAtUtc": "2026-07-29T13:33:00Z",
+  "note": "Release de DESARROLLO. El candidato v4 conserva el runtime validado en Windows 11 con Windows PowerShell 5.1 y fue reempaquetado de forma reproducible. La suite completa Pester pasó 37 pruebas sin fallos; el ZIP final extraído pasó 3 pruebas de arranque sin fallos ni omisiones. PSScriptAnalyzer reportó 0 errores y 31 advertencias no bloqueantes. get.openfix.mx respondió HTTP 200. Continúa en canal dev; no se declara estable.",
+  "releasedAtUtc": "2026-08-03T16:42:11Z",
   "channel": "dev",
   "package": {
-    "fileName": "fixo-toolkit-0.1.0-dev-v2.zip",
-    "url": "https://github.com/Fixo-Queretaro/fixo-toolkit/releases/download/v0.1.0-dev/fixo-toolkit-0.1.0-dev-v2.zip",
-    "sha256": "cfbe5f9729dffbbedb3dfd333f886946f12cf56077d3786264de31c34349c2e1",
-    "sha256Note": "Hash real, verificado con sha256sum, del ZIP reproducible generado el 2026-07-29 (38 archivos, contenido descrito en el reporte de entrega). bootstrap.ps1 NUNCA lee el manifest empaquetado DENTRO del ZIP: siempre descarga manifest/release.json por separado desde la rama publicada (ManifestUrl) y usa ESE archivo como ancla de confianza para verificar el ZIP. Por eso la copia de este archivo embebida en el propio ZIP es solo informativa/histórica; la copia autoritativa es la que se publique en main. Si se edita cualquier archivo del repo hay que regenerar el ZIP y recalcular este hash antes de publicar (comando en docs/DEPLOYMENT.md)."
+    "fileName": "fixo-toolkit-0.1.0-dev-v4.zip",
+    "url": "https://github.com/Fixo-Queretaro/fixo-toolkit/releases/download/v0.1.0-dev/fixo-toolkit-0.1.0-dev-v4.zip",
+    "sha256": "1c6df3746fb300c336df8c3e088fe20358b3cfd16ed78e0ebdca6b290c53202b",
+    "sha256Note": "Hash verificado descargando el asset publicado desde GitHub; coincide con el candidato aprobado. El ZIP contiene 45 entradas, pesa 60163 bytes y superó la comprobación de integridad. bootstrap.ps1 descarga siempre el manifiesto autoritativo desde main."
   },
   "minimumPowerShellVersion": "5.1",
   "supportedOS": [
@@ -25,11 +25,6 @@
       "commit": "39ece12517fd2ebccacb41ccfbde1e6e25d8830c",
       "sha256": "ca7e8d090fdb2bc757f19d3a56987fc922057fdd97bad8c21e8383fe6ca090ba",
       "license": "AGPL-3.0 (declarado en LICENSE.txt del repositorio original; tratado conservadoramente pese a que el README indica MIT)"
-    },
-    {
-      "name": "Microsoft Activation Scripts (launcher)",
-      "sourceUrl": "https://get.activated.win",
-      "note": "No vendorizado; se invoca en tiempo de ejecución con consentimiento explícito del usuario. FIXO no distribuye ni fija este script por hash."
     }
   ]
 }

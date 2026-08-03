@@ -1,4 +1,4 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 <#
 .SYNOPSIS
     Motor de transacciones para las acciones seguras de FIXO Toolkit.
