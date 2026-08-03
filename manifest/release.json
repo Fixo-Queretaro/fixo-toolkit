@@ -3,14 +3,14 @@
   "product": "fixo-toolkit",
   "version": "0.1.0-dev",
   "status": "development",
-  "note": "Release de DESARROLLO. El candidato v3 fue validado en Windows 11 con Windows PowerShell 5.1 mediante el entrypoint real y -SelfTest. Todos los módulos obligatorios cargaron correctamente y no se realizó ningún cambio en el sistema. Continúa en canal dev; no se declara estable. Quedan pendientes la suite completa Pester/PSScriptAnalyzer y la validación end-to-end de get.openfix.mx.",
-  "releasedAtUtc": "2026-07-30T15:19:25Z",
+  "note": "Release de DESARROLLO. El candidato v4 conserva el runtime validado en Windows 11 con Windows PowerShell 5.1 y fue reempaquetado de forma reproducible. La suite completa Pester pasó 37 pruebas sin fallos; el ZIP final extraído pasó 3 pruebas de arranque sin fallos ni omisiones. PSScriptAnalyzer reportó 0 errores y 31 advertencias no bloqueantes. get.openfix.mx respondió HTTP 200. Continúa en canal dev; no se declara estable.",
+  "releasedAtUtc": "2026-08-03T16:42:11Z",
   "channel": "dev",
   "package": {
-    "fileName": "fixo-toolkit-0.1.0-dev-v3.zip",
-    "url": "https://github.com/Fixo-Queretaro/fixo-toolkit/releases/download/v0.1.0-dev/fixo-toolkit-0.1.0-dev-v3.zip",
-    "sha256": "a7fd2d8539f059bd963e167d5b550a059b36c3091863bac525bb8a673f262939",
-    "sha256Note": "Hash verificado descargando el asset publicado desde GitHub y nuevamente en Windows PowerShell 5.1 antes de ejecutar -SelfTest. El ZIP contiene 39 archivos. bootstrap.ps1 descarga siempre este manifiesto autoritativo desde main; la copia incluida dentro del ZIP es únicamente histórica y todavía apunta a v2."
+    "fileName": "fixo-toolkit-0.1.0-dev-v4.zip",
+    "url": "https://github.com/Fixo-Queretaro/fixo-toolkit/releases/download/v0.1.0-dev/fixo-toolkit-0.1.0-dev-v4.zip",
+    "sha256": "1c6df3746fb300c336df8c3e088fe20358b3cfd16ed78e0ebdca6b290c53202b",
+    "sha256Note": "Hash verificado descargando el asset publicado desde GitHub; coincide con el candidato aprobado. El ZIP contiene 45 entradas, pesa 60163 bytes y superó la comprobación de integridad. bootstrap.ps1 descarga siempre el manifiesto autoritativo desde main."
   },
   "minimumPowerShellVersion": "5.1",
   "supportedOS": [
