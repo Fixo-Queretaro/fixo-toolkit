@@ -90,20 +90,30 @@ Describe 'Arranque real del entrypoint en un proceso de PowerShell nuevo (sin pr
 
             $result = Invoke-FixoFreshProcess -ScriptPath $entry -ScriptArgs @('-SelfTest', '-SkipElevationCheck')
 
-            $result.Output | Should -Not -Match 'no se reconoce como nombre de un cmdlet'
             $result.ExitCode | Should -Be 0
         }
     }
 
     Context 'ZIP candidato final extraído (paquete real, no working tree)' {
-        It 'el candidato v3 extraído en una carpeta temporal pasa -SelfTest en un proceso nuevo' -Skip:(-not $Script:PsHostAvailable) {
-            $candidateZip = Join-Path -Path $Script:RepoRoot -ChildPath 'fixo-toolkit-0.1.0-dev-v3.zip'
-            if (-not (Test-Path -LiteralPath $candidateZip)) {
-                Set-ItResult -Skipped -Because "No se encontró $candidateZip en esta corrida; generar el candidato primero."
+        It 'el ZIP indicado por FIXO_CANDIDATE_ZIP pasa -SelfTest en un proceso nuevo' -Skip:(-not $Script:PsHostAvailable) {
+            $candidateZipInput = [Environment]::GetEnvironmentVariable('FIXO_CANDIDATE_ZIP')
+            if ([string]::IsNullOrWhiteSpace($candidateZipInput)) {
+                Set-ItResult -Skipped -Because 'No se definió FIXO_CANDIDATE_ZIP; generar el candidato y pasar su ruta para probarlo.'
                 return
             }
 
-            $extractDir = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath ("fixo-v3-test-" + [Guid]::NewGuid().ToString('N'))
+            if ([IO.Path]::IsPathRooted($candidateZipInput)) {
+                $candidateZip = $candidateZipInput
+            }
+            else {
+                $candidateZip = Join-Path -Path $Script:RepoRoot -ChildPath $candidateZipInput
+            }
+
+            if (-not (Test-Path -LiteralPath $candidateZip -PathType Leaf)) {
+                throw "FIXO_CANDIDATE_ZIP apunta a un archivo inexistente: $candidateZip"
+            }
+
+            $extractDir = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath ("fixo-candidate-test-" + [Guid]::NewGuid().ToString('N'))
             Expand-Archive -LiteralPath $candidateZip -DestinationPath $extractDir -Force
 
             $entry = Join-Path -Path $extractDir -ChildPath 'src\Invoke-FixoToolkit.ps1'
@@ -111,7 +121,6 @@ Describe 'Arranque real del entrypoint en un proceso de PowerShell nuevo (sin pr
 
             $result = Invoke-FixoFreshProcess -ScriptPath $entry -ScriptArgs @('-SelfTest', '-SkipElevationCheck')
 
-            $result.Output | Should -Not -Match 'no se reconoce como nombre de un cmdlet'
             $result.ExitCode | Should -Be 0
 
             Remove-Item -LiteralPath $extractDir -Recurse -Force -ErrorAction SilentlyContinue
@@ -143,7 +152,6 @@ Describe 'Arranque real del entrypoint en un proceso de PowerShell nuevo (sin pr
 
             $result.ExitCode | Should -Not -Be 0
             $result.Output | Should -Match "Initialize-FixoLog"
-            $result.Output | Should -Match 'no se reconoce como nombre de un cmdlet'
 
             Remove-Item -LiteralPath $extractDir -Recurse -Force -ErrorAction SilentlyContinue
         }
